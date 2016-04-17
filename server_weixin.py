@@ -10,6 +10,7 @@ import selenium
 import cPickle as p
 from time import strftime,localtime
 import re
+from simsimi import simsimi
 def pm25(city):
 	city=city.encode("utf-8")
 	f=file('./stats_weather/pm25.txt','r')
@@ -78,7 +79,6 @@ if sys.getdefaultencoding() != default_encoding:
 print '=======open webdirver'
 br=webdriver.Remote(desired_capabilities=DesiredCapabilities.HTMLUNITWITHJS)
 #br=webdriver.Chrome()
-print '=======go to  weixin'
 br.get("https://mp.weixin.qq.com")
 #account=raw_input('Plese input account:')
 #br.find_element_by_name('account').send_keys(account)
@@ -86,13 +86,10 @@ br.find_element_by_name('account').send_keys('weixinforspurs@126.com')
 #password=raw_input('Plese input account:')
 #br.find_element_by_name('password').send_keys(password)
 br.find_element_by_name('password').send_keys('cpu2.55305')
-print '=======login weixin'
 br.find_element_by_id('loginBt').click()
 print '=======login success!'
 sleep(1)
-'''=======select message list======'''
 br.find_element_by_xpath('//a[@data-id=10012]').click()
-print '=======finisn select msg list'
 sleep(1)
 while 1:
 	try:
@@ -107,7 +104,8 @@ while 1:
 		elif len(msg_nba)!=0: 
 			msg_out=msg_nba
 		else:
-			msg_out='input error'
+			#msg_out='input error'
+			msg_out=simsimi(msg)
 		br.execute_script('document.getElementsByClassName("edit_area js_editorArea")[1].click()')
 		br.execute_script('document.getElementsByClassName("edit_area js_editorArea")[1].innerHTML='+dumps(msg_out))
 		br.find_element_by_xpath('//div[@class="emotion_editor"]/div[2]').send_keys(Keys.LEFT)
@@ -115,5 +113,5 @@ while 1:
 		br.find_element_by_xpath('//div[@class="emotion_editor"]/div[2]').send_keys(Keys.ENTER)
 	except selenium.common.exceptions.NoSuchElementException:
 		print "new msg is 0",time()
-	sleep(0.4)
+	sleep(0.3)
 	br.refresh()	
